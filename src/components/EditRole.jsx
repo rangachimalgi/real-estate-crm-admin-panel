@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
+import { apiCall } from '../config/api'
 
 function EditRole() {
   const navigate = useNavigate()
@@ -31,17 +32,7 @@ function EditRole() {
 
   const fetchRole = async () => {
     try {
-      const response = await fetch(`http://localhost:8000/roles/${id}`, {
-        headers: {
-          'Authorization': `Bearer ${localStorage.getItem('adminToken')}`
-        }
-      })
-
-      if (!response.ok) {
-        throw new Error('Failed to fetch role')
-      }
-
-      const role = await response.json()
+      const role = await apiCall(`/roles/${id}`)
       setFormData({
         name: role.name,
         screens: role.screens || []
@@ -90,19 +81,10 @@ function EditRole() {
     }
 
     try {
-      const response = await fetch(`http://localhost:8000/roles/${id}`, {
+      await apiCall(`/roles/${id}`, {
         method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('adminToken')}`
-        },
         body: JSON.stringify(formData)
       })
-
-      if (!response.ok) {
-        const errorData = await response.json()
-        throw new Error(errorData.error || 'Failed to update role')
-      }
 
       // Redirect to roles list
       navigate('/roles')

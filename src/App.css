@@ -634,3 +634,87 @@ body {
   outline: 2px solid #fbbf24;
   outline-offset: 2px;
 }
+
+/* Environment Switcher Styles */
+.environment-switcher {
+  position: relative;
+  display: inline-block;
+}
+
+.env-toggle {
+  background: #4a5568;
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.env-toggle:hover {
+  background: #2d3748;
+  transform: translateY(-1px);
+}
+
+.env-dropdown {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  background: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  padding: 16px;
+  min-width: 250px;
+  z-index: 1000;
+  margin-top: 4px;
+}
+
+.env-info {
+  margin-bottom: 12px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #e2e8f0;
+  font-size: 12px;
+  color: #4a5568;
+  line-height: 1.4;
+}
+
+.env-options {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.env-option {
+  background: #f7fafc;
+  border: 1px solid #e2e8f0;
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-align: left;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.env-option:hover {
+  background: #edf2f7;
+  border-color: #fbbf24;
+}
+
+.env-option.active {
+  background: #fbbf24;
+  color: white;
+  border-color: #f59e0b;
+}
+
+.env-option.active:hover {
+  background: #f59e0b;
+}

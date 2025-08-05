@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
+import { apiCall } from '../config/api'
 
 function UsersList() {
   const [users, setUsers] = useState([])
@@ -12,17 +13,7 @@ function UsersList() {
 
   const fetchUsers = async () => {
     try {
-      const response = await fetch('http://localhost:8000/users', {
-        headers: {
-          'Authorization': `Bearer ${localStorage.getItem('adminToken')}`
-        }
-      })
-
-      if (!response.ok) {
-        throw new Error('Failed to fetch users')
-      }
-
-      const data = await response.json()
+      const data = await apiCall('/users')
       setUsers(data)
     } catch (error) {
       console.error('Error fetching users:', error)
@@ -38,16 +29,9 @@ function UsersList() {
     }
 
     try {
-      const response = await fetch(`http://localhost:8000/users/${userId}`, {
-        method: 'DELETE',
-        headers: {
-          'Authorization': `Bearer ${localStorage.getItem('adminToken')}`
-        }
+      await apiCall(`/users/${userId}`, {
+        method: 'DELETE'
       })
-
-      if (!response.ok) {
-        throw new Error('Failed to delete user')
-      }
 
       // Remove the user from the list
       setUsers(users.filter(user => user._id !== userId))

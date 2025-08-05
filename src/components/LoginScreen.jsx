@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { apiCall } from '../config/api'
 
 function LoginScreen({ onLogin }) {
   const [formData, setFormData] = useState({
@@ -24,22 +25,13 @@ function LoginScreen({ onLogin }) {
     setError('')
     
     try {
-      const response = await fetch('http://localhost:8000/auth/login', {
+      const data = await apiCall('/auth/login', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
         body: JSON.stringify({
           username: formData.username,
           password: formData.password
         })
       })
-
-      const data = await response.json()
-
-      if (!response.ok) {
-        throw new Error(data.error || 'Login failed')
-      }
 
       // Check if user is super admin
       if (data.user.role !== 'superadmin') {

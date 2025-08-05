@@ -1,4 +1,5 @@
 import { Link, useLocation } from 'react-router-dom'
+import EnvironmentSwitcher from './EnvironmentSwitcher'
 
 function Dashboard({ user, onLogout, children }) {
   const location = useLocation()
@@ -17,6 +18,7 @@ function Dashboard({ user, onLogout, children }) {
             <span className="user-info">Welcome, {user?.name || 'Super Admin'}</span>
           </div>
           <div className="header-right">
+            <EnvironmentSwitcher />
             <button onClick={onLogout} className="logout-button">
               Logout
             </button>

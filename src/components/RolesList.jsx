@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
+import { apiCall } from '../config/api'
 
 function RolesList() {
   const [roles, setRoles] = useState([])
@@ -12,17 +13,7 @@ function RolesList() {
 
   const fetchRoles = async () => {
     try {
-      const response = await fetch('http://localhost:8000/roles', {
-        headers: {
-          'Authorization': `Bearer ${localStorage.getItem('adminToken')}`
-        }
-      })
-
-      if (!response.ok) {
-        throw new Error('Failed to fetch roles')
-      }
-
-      const data = await response.json()
+      const data = await apiCall('/roles')
       setRoles(data)
     } catch (error) {
       console.error('Error fetching roles:', error)
@@ -38,16 +29,9 @@ function RolesList() {
     }
 
     try {
-      const response = await fetch(`http://localhost:8000/roles/${roleId}`, {
-        method: 'DELETE',
-        headers: {
-          'Authorization': `Bearer ${localStorage.getItem('adminToken')}`
-        }
+      await apiCall(`/roles/${roleId}`, {
+        method: 'DELETE'
       })
-
-      if (!response.ok) {
-        throw new Error('Failed to delete role')
-      }
 
       // Remove the role from the list
       setRoles(roles.filter(role => role._id !== roleId))

@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { apiCall } from '../config/api'
 
 function CreateUser() {
   const navigate = useNavigate()
@@ -20,17 +21,7 @@ function CreateUser() {
 
   const fetchRoles = async () => {
     try {
-      const response = await fetch('http://localhost:8000/roles', {
-        headers: {
-          'Authorization': `Bearer ${localStorage.getItem('adminToken')}`
-        }
-      })
-
-      if (!response.ok) {
-        throw new Error('Failed to fetch roles')
-      }
-
-      const data = await response.json()
+      const data = await apiCall('/roles')
       setRoles(data)
     } catch (error) {
       console.error('Error fetching roles:', error)
@@ -67,19 +58,10 @@ function CreateUser() {
     }
 
     try {
-      const response = await fetch('http://localhost:8000/users', {
+      await apiCall('/users', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('adminToken')}`
-        },
         body: JSON.stringify(formData)
       })
-
-      if (!response.ok) {
-        const errorData = await response.json()
-        throw new Error(errorData.error || 'Failed to create user')
-      }
 
       // Show success message and redirect
       alert('User created successfully!')

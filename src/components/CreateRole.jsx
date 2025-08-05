@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { apiCall } from '../config/api'
 
 function CreateRole() {
   const navigate = useNavigate()
@@ -59,19 +60,10 @@ function CreateRole() {
     }
 
     try {
-      const response = await fetch('http://localhost:8000/roles', {
+      await apiCall('/roles', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('adminToken')}`
-        },
         body: JSON.stringify(formData)
       })
-
-      if (!response.ok) {
-        const errorData = await response.json()
-        throw new Error(errorData.error || 'Failed to create role')
-      }
 
       // Redirect to roles list
       navigate('/roles')
