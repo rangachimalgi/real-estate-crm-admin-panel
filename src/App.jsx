@@ -8,6 +8,11 @@ import CreateRole from './components/CreateRole'
 import EditRole from './components/EditRole'
 import CreateUser from './components/CreateUser'
 import UsersList from './components/UsersList'
+import ProjectsList from './components/ProjectsList'
+import CreateProject from './components/CreateProject'
+import EditProject from './components/EditProject'
+import ProjectDetails from './components/ProjectDetails'
+import ErrorBoundary from './components/ErrorBoundary'
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false)
@@ -52,16 +57,22 @@ function App() {
   return (
     <Router>
       <div className="app">
-        <Dashboard user={user} onLogout={handleLogout}>
-          <Routes>
-            <Route path="/" element={<Navigate to="/roles" replace />} />
-            <Route path="/roles" element={<RolesList />} />
-            <Route path="/roles/create" element={<CreateRole />} />
-            <Route path="/roles/:id/edit" element={<EditRole />} />
-            <Route path="/users" element={<UsersList />} />
-            <Route path="/users/create" element={<CreateUser />} />
-          </Routes>
-        </Dashboard>
+        <ErrorBoundary>
+          <Dashboard user={user} onLogout={handleLogout}>
+            <Routes>
+              <Route path="/" element={<Navigate to="/projects" replace />} />
+              <Route path="/projects" element={<ProjectsList />} />
+              <Route path="/projects/create" element={<CreateProject />} />
+              <Route path="/projects/:id" element={<ProjectDetails />} />
+              <Route path="/projects/:id/edit" element={<EditProject />} />
+              <Route path="/roles" element={<RolesList />} />
+              <Route path="/roles/create" element={<CreateRole />} />
+              <Route path="/roles/:id/edit" element={<EditRole />} />
+              <Route path="/users" element={<UsersList />} />
+              <Route path="/users/create" element={<CreateUser />} />
+            </Routes>
+          </Dashboard>
+        </ErrorBoundary>
       </div>
     </Router>
   )

@@ -30,6 +30,12 @@ function Dashboard({ user, onLogout, children }) {
       <nav className="dashboard-nav">
         <div className="nav-content">
           <Link 
+            to="/projects" 
+            className={`nav-link ${isActive('/projects') ? 'active' : ''}`}
+          >
+            Projects Management
+          </Link>
+          <Link 
             to="/roles" 
             className={`nav-link ${isActive('/roles') ? 'active' : ''}`}
           >
