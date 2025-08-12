@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom'
 import './App.css'
+import { initializeEnvironment } from './config/environment.js'
 import LoginScreen from './components/LoginScreen'
 import Dashboard from './components/Dashboard'
 import RolesList from './components/RolesList'
@@ -19,6 +20,19 @@ function App() {
   const [user, setUser] = useState(null)
 
   useEffect(() => {
+    // Initialize environment configuration
+    const initApp = async () => {
+      try {
+        console.log('🚀 Initializing admin panel...');
+        await initializeEnvironment();
+        console.log('✅ Environment initialized successfully');
+      } catch (error) {
+        console.error('❌ Failed to initialize environment:', error);
+      }
+    };
+    
+    initApp();
+    
     // Check if user is already logged in
     const token = localStorage.getItem('adminToken')
     const userData = localStorage.getItem('adminUser')

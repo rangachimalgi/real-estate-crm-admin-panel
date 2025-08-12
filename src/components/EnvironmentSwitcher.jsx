@@ -1,24 +1,52 @@
 import { useState, useEffect } from 'react'
-import { ENVIRONMENTS, ENV_CONFIG, getEffectiveEnvironment } from '../config/environment'
-import { API_BASE_URL } from '../config/api'
+import { ENVIRONMENTS, getCurrentConfig, switchToLocalhost, switchToProduction } from '../config/environment'
+import { getApiBaseUrl } from '../config/api'
 
 function EnvironmentSwitcher() {
-  const [currentEnv, setCurrentEnv] = useState(getEffectiveEnvironment())
+  const [currentEnv, setCurrentEnv] = useState(null)
+  const [currentConfig, setCurrentConfig] = useState(null)
   const [isVisible, setIsVisible] = useState(false)
 
   useEffect(() => {
-    // Show environment info in console for debugging
-    console.log('🌍 Current Environment:', currentEnv)
-    console.log('🔗 API Base URL:', API_BASE_URL)
-  }, [currentEnv])
+    // Initialize and get current environment
+    const initEnv = async () => {
+      const config = getCurrentConfig();
+      const env = config === ENV_CONFIG[ENVIRONMENTS.LOCAL] ? ENVIRONMENTS.LOCAL : ENVIRONMENTS.REMOTE;
+      setCurrentEnv(env);
+      setCurrentConfig(config);
+      
+      // Show environment info in console for debugging
+      console.log('🌍 Current Environment:', env);
+      console.log('🔗 API Base URL:', getApiBaseUrl());
+    };
+    
+    initEnv();
+  }, []);
 
   const handleEnvironmentChange = (newEnv) => {
-    setCurrentEnv(newEnv)
+    if (newEnv === ENVIRONMENTS.LOCAL) {
+      switchToLocalhost();
+    } else {
+      switchToProduction();
+    }
+    
+    // Update state
+    setCurrentEnv(newEnv);
+    setCurrentConfig(ENV_CONFIG[newEnv]);
+    
     // Reload the page to apply the new environment
-    window.location.reload()
-  }
+    window.location.reload();
+  };
 
-  const currentConfig = ENV_CONFIG[currentEnv]
+  if (!currentConfig) {
+    return (
+      <div className="environment-switcher">
+        <button className="env-toggle" disabled>
+          🔄 Initializing...
+        </button>
+      </div>
+    );
+  }
 
   return (
     <div className="environment-switcher">
@@ -57,7 +85,7 @@ function EnvironmentSwitcher() {
         </div>
       )}
     </div>
-  )
+  );
 }
 
 export default EnvironmentSwitcher 

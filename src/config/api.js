@@ -1,22 +1,38 @@
-import { getEffectiveEnvironment, ENV_CONFIG } from './environment.js'
+import { getCurrentConfig, initializeEnvironment } from './environment.js'
 
-// Get current API config
-const getApiConfig = () => {
-  const env = getEffectiveEnvironment()
-  return ENV_CONFIG[env]
-}
+// Get current API config with smart detection
+const getApiConfig = async () => {
+  await initializeEnvironment();
+  return getCurrentConfig();
+};
 
-// API base URL
-export const API_BASE_URL = getApiConfig().baseURL
+// API base URL (will be set after initialization)
+let API_BASE_URL = null;
+let API_TIMEOUT = null;
 
-// API timeout
-export const API_TIMEOUT = getApiConfig().timeout
+// Initialize API configuration
+const initializeApiConfig = async () => {
+  if (!API_BASE_URL) {
+    const config = await getApiConfig();
+    API_BASE_URL = config.baseURL;
+    API_TIMEOUT = config.timeout;
+    console.log('🌐 API initialized with:', { baseURL: API_BASE_URL, timeout: API_TIMEOUT });
+  }
+  return { API_BASE_URL, API_TIMEOUT };
+};
 
-// Helper function to make API calls
+// Export getters for backward compatibility
+export const getApiBaseUrl = () => API_BASE_URL;
+export const getApiTimeout = () => API_TIMEOUT;
+
+// Helper function to make API calls with smart initialization
 export const apiCall = async (endpoint, options = {}) => {
-  const url = `${API_BASE_URL}${endpoint}`
+  // Initialize API config if not already done
+  const { API_BASE_URL, API_TIMEOUT } = await initializeApiConfig();
   
-  console.log('API Call:', url, options) // Debug log
+  const url = `${API_BASE_URL}${endpoint}`;
+  
+  console.log('API Call:', url, options); // Debug log
   
   const defaultOptions = {
     headers: {
@@ -24,7 +40,7 @@ export const apiCall = async (endpoint, options = {}) => {
     },
     timeout: API_TIMEOUT,
     ...options
-  }
+  };
 
   // TEMPORARY: Remove auth token for testing to match Postman
   console.log('🔧 Testing without auth token to match Postman')
@@ -86,4 +102,7 @@ export const apiCall = async (endpoint, options = {}) => {
 }
 
 // Export current environment for debugging
-export const CURRENT_ENV = getEffectiveEnvironment() 
+export const getCurrentEnv = async () => {
+  await initializeEnvironment();
+  return getCurrentConfig();
+}; 
